@@ -2,7 +2,7 @@
 
 Este proyecto es un programa en Python que **expande productos de factores algebraicos** escritos en sintaxis **LaTeX**, y devuelve la expresión resultante como un **polinomio también en formato LaTeX**.
 
-Fue desarrollado sin el uso de bibliotecas externas, empleando únicamente funciones básicas de Python y una estructura clara y modular. Además, ahora soporta **factores elevados a potencias**, como:
+Fue desarrollado usando funciones básicas de python y la libreria de Tkinter para la creación de la interfaz gráfica.
 
 ```
 (x+1)^2(x-2)
