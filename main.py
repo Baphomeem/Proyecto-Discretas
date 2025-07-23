@@ -1,14 +1,18 @@
-#Importe de la libreria tkinter para implementacion de la interfaz
-import tkinter as tk
-
-#Toma la entrada y reescribe los simbolos ( ) {} $ +- y -
 def limpiar_entrada(f):
+    while ")^{" in f:
+        pos_f = f.find(")^{")
+        exp_f = f[pos_f+3:]
+        exp_f = exp_f[:exp_f.find("}")]
+        factor_f = f[pos_f-1::-1]
+        factor_f = "(" + factor_f[:factor_f.find("(")] + ")"
+        factor_f = factor_f[::-1]
+        f = f[:pos_f+1] + f[pos_f+4+len(exp_f):] + factor_f*(int(exp_f)-1)
+        
     f = f.replace(" ", "").replace("-", "+-")
     f = f.replace("{+-", "-").replace("$", "").replace("{", "").replace("}", "")
     f = f.replace("(", " ").replace(")", " ")
     return f.strip().split("  ")
 
-# Separa los factores en cada termino, devolviendo cada factor en un arreglo de 2 elementos (cada termino)
 def separar_terminos(factores):
     coeficientes = []
     for factor in factores:
@@ -16,7 +20,6 @@ def separar_terminos(factores):
         coeficientes.append([t for t in terminos if t])
     return coeficientes
 
-#Toma los terminos y determina los coeficientes y exponentes
 def extraer_coeficientes_exponentes(terminos):
     coeficientes = []
     exponentes = []
@@ -41,7 +44,6 @@ def extraer_coeficientes_exponentes(terminos):
         exponentes.append(e_factor)
     return coeficientes, exponentes
 
-#determina el valor de lso terminos que componen el polinomio y sus exponentes
 def multiplicar_polinomios(coeficientes, exponentes):
     while len(coeficientes) >= 2:
         a, b = coeficientes[0], coeficientes[1]
@@ -52,7 +54,6 @@ def multiplicar_polinomios(coeficientes, exponentes):
         exponentes = [sumaE] + exponentes[2:]
     return coeficientes[0], exponentes[0]
 
-#suma terminos cuyo grado sea el mismo
 def sumar_terminos_semejantes(coeficientes, exponentes):
     i = 0
     while i < len(exponentes):
@@ -72,7 +73,6 @@ def sumar_terminos_semejantes(coeficientes, exponentes):
         i += 1
     return coeficientes, exponentes
 
-#ordena los terminos de mayor a menor grado
 def ordenar(coeficientes, exponentes):
     pares = sorted(zip(exponentes, coeficientes), reverse=True)
     exp_ordenado, coef_ordenado = zip(*pares)
@@ -86,14 +86,12 @@ def formato_LaTex(coef, exp):
             termino += str(c)
         if e != 0:
             termino += 'x'
-        if e > 1:
+        if e > 1 or e < 0 :
             termino += f'^{{{e}}}'
         pol.append(termino)
     return '$' + ' + '.join(pol).replace(' + -', ' - ') + '$'
 
-#toma la entrada ingresada por el usuario y determina factores terminos y coeficientes con las otras funciones
-def procesar_entrada():
-    f = polinomio.get()
+def procesar_entrada(f):
     factores = limpiar_entrada(f)
     terminos = separar_terminos(factores)
     coeficientes, exponentes = extraer_coeficientes_exponentes(terminos)
@@ -102,10 +100,12 @@ def procesar_entrada():
     coef_final, exp_final = ordenar(coef_final, exp_final)
     return formato_LaTex(coef_final, exp_final)
 
-#ejecuta la funcion procesar entrada para obtener el resultado 
-def ejecutar():
-    procesado = procesar_entrada()
-    resultado.set(f"Resultado: {procesado}") 
+# Programa principal
+if __name__ == "__main__":
+    entrada = input()
+    resultado = procesar_entrada(entrada)
+    print(resultado)
+
 
 #IMPLEMENTACION DE LA INTERFAZ GRAFICA
 
